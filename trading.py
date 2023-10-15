@@ -91,6 +91,11 @@ while True:
           cur_price = ticker_data['last']
           position = larry(ticker, cur_price)
           if position == "long":
+            market = binance.market(ticker)
+            binance.fapiPrivate_post_leverage({
+              'symbol': market['id'],
+              'leverage': 1
+            })
             amount = cal_amount(bullets.pop(), cur_price)
             buy_order(binance, ticker, amount)
             portfolio[ticker] = ["long", amount]
@@ -98,6 +103,11 @@ while True:
             if len(portfolio) >= 5:
               break
           elif position == "short":
+            market = binance.market(ticker)
+            binance.fapiPrivate_post_leverage({
+              'symbol': market['id'],
+              'leverage': 1
+            })
             amount = cal_amount(bullets.pop(), cur_price)
             sell_order(binance, ticker, amount)
             portfolio[ticker] = ["short", amount]
