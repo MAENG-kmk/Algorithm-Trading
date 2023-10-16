@@ -4,6 +4,29 @@ import datetime
 import time
 import math
 import telegram
+from telegram.ext import CommandHandler, Updater
+
+tele_token = "5210226721:AAG95BNFRPXRME5MU_ytI_JIx7wgiW1XASU"
+chat_id = 5135122806
+
+updater = Updater(token=tele_token, use_context=True)
+dispatcher = updater.dispatcher
+
+def check(update, context):
+  global portfolio
+  message = ""
+  for ticker in portfolio:
+    text = "{}: {}포지션, 수량:{} \n".format(ticker, portfolio[ticker][0], portfolio[ticker][1])
+    message += text
+  message += "{}개의 종목이 담겼습니다.".format(len(portfolio))
+  context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+    
+
+check_handler = CommandHandler('check', check)
+dispatcher.add_handler(check_handler)
+
+updater.start_polling()
+
 
 api_key = "w6wGRNsx88wZHGNi6j2j663hyvEpDNHrLE6E6UntucPkJ4Lqp8P4rasX1lAx9ylE"
 secret = "EtbkzmsRjVw2NHqis4rLlIvrZN4HVfHp77Qdzd8wG1AbyoXttLV8EgS7z9Efz9ut"
@@ -74,13 +97,15 @@ while True:
           for ticker in portfolio:
             if portfolio[ticker][0] == "long":
               sell_order(binance, ticker, portfolio[ticker][1])
+              send_message("{} long 포지션 정리".format(ticker))
             else:
               buy_order(binance, ticker, portfolio[ticker][1])
+              send_message("{} short 포지션 정리".format(ticker))
           portfolio = {}
           balance = binance.fetch_balance()
           balance = balance['free']['USDT']
           bullets = [balance / 5] * 5
-          send_message("포지션 정리, 잔액: {}$".format(balance))
+          send_message("close all, 잔액: {}$".format(balance))
           break
         time.sleep(60)
         
