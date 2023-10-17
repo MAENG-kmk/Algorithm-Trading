@@ -1,17 +1,15 @@
-import telegram
-from telegram.ext import CommandHandler, Updater
+import ccxt
 
-tele_token = "5210226721:AAG95BNFRPXRME5MU_ytI_JIx7wgiW1XASU"
-chat_id = 5135122806
+api_key = "w6wGRNsx88wZHGNi6j2j663hyvEpDNHrLE6E6UntucPkJ4Lqp8P4rasX1lAx9ylE"
+secret = "EtbkzmsRjVw2NHqis4rLlIvrZN4HVfHp77Qdzd8wG1AbyoXttLV8EgS7z9Efz9ut"
 
-updater = Updater(token=tele_token, use_context=True)
-dispatcher = updater.dispatcher
+binance = ccxt.binance(config={
+    'apiKey': api_key, 
+    'secret': secret,
+    'enableRateLimit': True,
+    'options': {
+        'defaultType': 'future'
+    }
+})
 
-def check(update, context):
-  context.bot.send_message(chat_id=update.effective_chat.id, text="뭐요")
-    
-
-check_handler = CommandHandler('check', check)
-dispatcher.add_handler(check_handler)
-
-updater.start_polling()
+balance = binance.fetch_balance()['total']['USDT']

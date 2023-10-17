@@ -11,7 +11,7 @@ def rsi(data):
     au /= 14
     ad /= 14
 
-    cur =  data.iloc[-1]['body']
+    cur = data.iloc[-1]['body']
     if cur > 0:
         au = (13 * au + cur) / 14
         ad = ad * 13 / 14
@@ -22,9 +22,9 @@ def rsi(data):
     rs = au / ad
     rsi = rs / ( 1 + rs) * 100
     
-    if rsi > 50:
-        return "long"
-    elif rsi < 50 and rsi > 30:
+    if rsi > 70:
         return "short"
+    elif rsi < 30:
+        return "long"
     
     return None

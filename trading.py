@@ -13,12 +13,13 @@ updater = Updater(token=tele_token, use_context=True)
 dispatcher = updater.dispatcher
 
 def check(update, context):
-  global portfolio
+  global portfolio, binance
   message = ""
   for ticker in portfolio:
-    text = "{}: {}포지션, 수량:{} \n".format(ticker, portfolio[ticker][0], portfolio[ticker][1])
+    text = "{}: {}포지션, 수량:{} \n\n".format(ticker, portfolio[ticker][0], portfolio[ticker][1])
     message += text
-  message += "{}개의 종목이 담겼습니다.".format(len(portfolio))
+  balance = binance.fetch_balance()['total']['USDT']
+  message += "\n\n현재 평가 잔고: {}".format(balance)
   context.bot.send_message(chat_id=update.effective_chat.id, text=message)
     
 

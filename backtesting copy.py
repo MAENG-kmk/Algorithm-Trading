@@ -9,10 +9,10 @@ import csv
 
 class Backtesting:
     def __init__(self, data):
-        self.data = data[1000:]                    # 데이터
+        self.data = data[:]                    # 데이터
         self.leverage = 1                   # 레버리지
         self.fee = 0.0008 * self.leverage   # 수수료
-        self.stop_loss = 0.1/self.leverage  # 스탑로스 퍼센트
+        self.stop_loss = 1/self.leverage  # 스탑로스 퍼센트
         self.ror = 1                        # 수익률
         self.winning_rate_history = []      # 승률 히스토리
         self.history = []                   # 트레이딩 히스토리
@@ -37,7 +37,7 @@ class Backtesting:
             if self.state["position"] == None:
                 ################################################################
                 # 데이터 슬라이싱, 트레이딩 로직 수정하는 부분
-                data = self.data[i-1:i+1]
+                data = self.data[i-20:i+1]
                 position, target_price = larry(data)
                 ################################################################
                 if position == None:        # 포지션이 결정되지 않았으면 걍 건너뜀
@@ -122,9 +122,10 @@ class Backtesting:
         plt.show()
             
 # 데이터셋 불러오기
-dataset = dataloader(symbol="BTC/USDT", timeframe="1d", limit=1500)
-print(dataset)
+dataset = pd.read_csv('data_1d')
+# dataset = dataloader(symbol="BTC/USDT", timeframe="1d", limit=1500)
+
 # 백테스트 실행
-# backtest = Backtesting(dataset)
-# backtest.excute()
-# backtest.result()
+backtest = Backtesting(dataset)
+backtest.excute()
+backtest.result()
