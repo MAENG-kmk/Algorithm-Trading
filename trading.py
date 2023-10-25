@@ -21,10 +21,25 @@ def check(update, context):
   balance = binance.fetch_balance()['total']['USDT']
   message += "\n\n현재 평가 잔고: {}".format(balance)
   context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+  
+def stop_trade(update, context):
+    global isRunning
+    context.bot.send_message(chat_id=update.effective_chat.id, text="시스템 중지, 재시작 명령어: continue")
+    isRunning = False
+
+def continue_trade(update, context):
+    global isRunning
+    context.bot.send_message(chat_id=update.effective_chat.id, text="시스템 재가동")
+    isRunning = True
     
 
 check_handler = CommandHandler('check', check)
+stop_trade_handler = CommandHandler('stop', stop_trade)
+continue_trade_handler = CommandHandler('continue', continue_trade)
+
 dispatcher.add_handler(check_handler)
+dispatcher.add_handler(stop_trade_handler)
+dispatcher.add_handler(continue_trade_handler)
 
 updater.start_polling()
 
@@ -88,13 +103,20 @@ balance = binance.fetch_balance()
 balance = balance['free']['USDT']
 bullets = [balance / 5] * 5
 
+isRunning = True
+
 send_message("트레이딩 시작, 잔액: {}$".format(balance))
 while True:
+  
+  while not isRunning:
+    time.sleep(60)
+    
   try:
     if len(portfolio) >= 5:
-      while True:
+      while isRunning:
         hour_now = datetime.datetime.now().hour
-        if hour_now == 9:
+        minute = datetime.datetime.now().minute
+        if hour_now == 9 and minute <= 1:
           for ticker in portfolio:
             if portfolio[ticker][0] == "long":
               sell_order(binance, ticker, portfolio[ticker][1])
