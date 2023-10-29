@@ -1,4 +1,11 @@
-import datetime
-
-minute = datetime.datetime.now().minute
-print(minute)
+a = 10
+b = []
+def test():
+    print(a)
+    print(b)
+    fuck()
+    
+def fuck():
+    print("fuck")
+    
+test()
