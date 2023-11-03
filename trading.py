@@ -28,9 +28,15 @@ def stop_trade(update, context):
     isRunning = False
 
 def start_trade(update, context):
-    global isRunning
+    global isRunning, balance, bullet, tickers, portfolio
+    balance = binance.fetch_balance()
+    balance = balance['free']['USDT']
+    bullet = balance / 5
+    tickers = binance.fetch_tickers()
+    portfolio = {}
+    send_message("트레이딩 시작, 잔액: {}$".format(balance))
+    
     isRunning = True
-    trade()
     context.bot.send_message(chat_id=update.effective_chat.id, text="시스템 재가동")
     
 
@@ -101,14 +107,14 @@ def send_message(text):
 
 isRunning = True
 
-def trade():
-  balance = binance.fetch_balance()
-  balance = balance['free']['USDT']
-  bullet = balance / 5
-  tickers = binance.fetch_tickers()
-  portfolio = {}
-  send_message("트레이딩 시작, 잔액: {}$".format(balance))
-  
+balance = binance.fetch_balance()
+balance = balance['free']['USDT']
+bullet = balance / 5
+tickers = binance.fetch_tickers()
+portfolio = {}
+send_message("트레이딩 시작, 잔액: {}$".format(balance))
+
+while True:
   while isRunning:
     try:
       if len(portfolio) >= 5:
@@ -117,23 +123,26 @@ def trade():
           minute = datetime.datetime.now().minute
           if hour_now == 9 and minute <= 1:
             closeMessage = ""
+            totalRor = 0
             for ticker in portfolio:
               ticker_data = binance.fetch_ticker(ticker)
               cur_price = ticker_data['last']
               percentage = cur_price / portfolio[ticker][2]
               if portfolio[ticker][0] == "long":
                 ror = (percentage - 1 - 0.0008) * 100
+                totalRor += ror / 5
                 sell_order(binance, ticker, portfolio[ticker][1])
                 closeMessage += "{} long 포지션 정리, 수익률: {}% \n".format(ticker, ror)
               else:
                 ror = (1 - percentage - 0.0008) * 100
+                totalRor += ror / 5
                 buy_order(binance, ticker, portfolio[ticker][1])
                 closeMessage += "{} short 포지션 정리, 수익률: {}% \n".format(ticker, ror)
             portfolio = {}
             balance = binance.fetch_balance()
             balance = balance['free']['USDT']
             bullet = balance / 5
-            closeMessage += "잔액: {}$".format(balance)
+            closeMessage += "잔액: {}$, 총 수익률: {}%".format(balance, totalRor)
             send_message(closeMessage)
             break
           time.sleep(60)
@@ -172,5 +181,5 @@ def trade():
 
     except Exception as e:
       print(e)
-      send_message("에러메시지: {}".format(e))
-    
+      send_message("에러메시지: {}".format(e))   
+  time.sleep(60)
