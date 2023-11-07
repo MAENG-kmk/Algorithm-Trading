@@ -78,6 +78,8 @@ def larry(ticker, cur_price):
   last = df.iloc[0]
   
   range = last['high'] - last['low']
+  if range < last['high'] / 50:
+      return None
   long_target = last["close"] + k * range
   short_target = last["close"] - k * range
   if cur_price > long_target:
@@ -105,7 +107,7 @@ def send_message(text):
 
 
 
-isRunning = True
+isRunning = False
 
 balance = binance.fetch_balance()
 balance = balance['free']['USDT']

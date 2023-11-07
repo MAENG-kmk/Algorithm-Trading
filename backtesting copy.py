@@ -122,8 +122,8 @@ class Backtesting:
         plt.show()
             
 # 데이터셋 불러오기
-dataset = pd.read_csv('data_1d')
-# dataset = dataloader(symbol="BTC/USDT", timeframe="1d", limit=1500)
+# dataset = pd.read_csv('data_1d')
+dataset = dataloader(symbol="ETH/USDT", timeframe="1d", limit=1500)
 
 # 백테스트 실행
 backtest = Backtesting(dataset)
