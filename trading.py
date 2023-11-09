@@ -19,7 +19,7 @@ def check(update, context):
     text = "{}: {}포지션, 수량:{} \n\n".format(ticker, portfolio[ticker][0], portfolio[ticker][1])
     message += text
   balance = binance.fetch_balance()['total']['USDT']
-  message += "\n\n현재 평가 잔고: {}".format(balance)
+  message += "\n\n현재 평가 잔고: {:.1f}".format(balance)
   context.bot.send_message(chat_id=update.effective_chat.id, text=message)
   
 def stop_trade(update, context):
@@ -34,7 +34,7 @@ def start_trade(update, context):
     bullet = balance / 5
     tickers = binance.fetch_tickers()
     portfolio = {}
-    send_message("트레이딩 시작, 잔액: {}$".format(balance))
+    send_message("트레이딩 시작, 잔액: {:.1f}$".format(balance))
     
     isRunning = True
     context.bot.send_message(chat_id=update.effective_chat.id, text="시스템 재가동")
@@ -114,7 +114,6 @@ balance = balance['free']['USDT']
 bullet = balance / 5
 tickers = binance.fetch_tickers()
 portfolio = {}
-send_message("트레이딩 시작, 잔액: {}$".format(balance))
 
 while True:
   while isRunning:
@@ -134,17 +133,17 @@ while True:
                 ror = (percentage - 1 - 0.0008) * 100
                 totalRor += ror / 5
                 sell_order(binance, ticker, portfolio[ticker][1])
-                closeMessage += "{} long 포지션 정리, 수익률: {}% \n".format(ticker, ror)
+                closeMessage += "{} long 포지션 정리 \n수익률: {:.2f}% \n\n".format(ticker, ror)
               else:
                 ror = (1 - percentage - 0.0008) * 100
                 totalRor += ror / 5
                 buy_order(binance, ticker, portfolio[ticker][1])
-                closeMessage += "{} short 포지션 정리, 수익률: {}% \n".format(ticker, ror)
+                closeMessage += "{} short 포지션 정리 \n수익률: {:.2f}% \n\n".format(ticker, ror)
             portfolio = {}
             balance = binance.fetch_balance()
             balance = balance['free']['USDT']
             bullet = balance / 5
-            closeMessage += "잔액: {}$, 총 수익률: {}%".format(balance, totalRor)
+            closeMessage += "\n잔액: {:.1f}$, 총 수익률: {:.2f}%".format(balance, totalRor)
             send_message(closeMessage)
             break
           time.sleep(60)
