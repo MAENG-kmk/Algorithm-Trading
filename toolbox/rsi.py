@@ -22,9 +22,9 @@ def rsi(data):
     rs = au / ad
     rsi = rs / ( 1 + rs) * 100
     
-    if rsi > 70:
-        return "short"
-    elif rsi < 30:
-        return "long"
+    if rsi >90:
+        return "no long"
+    elif rsi < 10:
+        return "no short"
     
     return None

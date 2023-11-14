@@ -124,8 +124,8 @@ class Backtesting:
         plt.show()
             
 # 데이터셋 불러오기
-# dataset = pd.read_csv('data/data_1d')
-dataset = dataloader(symbol="XRP/USDT", timeframe="1d", limit=1500)
+dataset = pd.read_csv('data/data_1d')
+# dataset = dataloader(symbol="XRP/USDT", timeframe="1d", limit=1500)
 
 # 백테스트 실행
 backtest = Backtesting(dataset)

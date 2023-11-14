@@ -12,6 +12,10 @@ chat_id = 5135122806
 updater = Updater(token=tele_token, use_context=True)
 dispatcher = updater.dispatcher
 
+def send_message(text):
+    bot = telegram.Bot(token = tele_token)
+    bot.sendMessage(chat_id = chat_id, text = text)
+
 def check(update, context):
   global portfolio, binance
   message = ""
@@ -73,7 +77,7 @@ def larry(ticker, cur_price):
   df = pd.DataFrame(data=ohlcv, columns=['datetime', 'open', 'high', 'low', 'close', 'volume'])
   df['datetime'] = pd.to_datetime(df['datetime'], unit='ms')
   
-  k = 0.5
+  k = 0.65
   
   last = df.iloc[0]
   
@@ -98,12 +102,6 @@ def buy_order(binance, ticker, amount):
     
 def sell_order(binance, ticker, amount):
     binance.create_market_sell_order(symbol=ticker, amount=amount)  
-    
-def send_message(text):
-    tele_token = "5210226721:AAG95BNFRPXRME5MU_ytI_JIx7wgiW1XASU"
-    chat_id = 5135122806
-    bot = telegram.Bot(token = tele_token)
-    bot.sendMessage(chat_id = chat_id, text = text)
 
 
 
