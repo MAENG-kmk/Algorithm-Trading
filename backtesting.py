@@ -60,7 +60,7 @@ class Backtesting:
 
                     if self.state["stop_loss"] > self.data.iloc[i]["low"]:    # 스탑로스보다 가격이 더 내려가면 스탑로스에서 스탑
                         ror = self.state["stop_loss"] / self.state["entry_price"] - self.fee
-                        print("스탑로스맞았다")
+                        # print("스탑로스맞았다")
                     else:
                         ror = self.data.iloc[i]["close"] / self.state["entry_price"] - self.fee
 
@@ -69,11 +69,11 @@ class Backtesting:
 
                     if ror > 1:
                         self.count_result[0] += 1
-                        print("{} 승리, 수익률: {}, 누적 수익률: {}".format(self.state["position"], (ror-1) * 100, (self.ror-1) * 100))
+                        # print("{} 승리, 수익률: {}, 누적 수익률: {}".format(self.state["position"], (ror-1) * 100, (self.ror-1) * 100))
                     else:
                         self.count_result[1] += 1
                         self.mdd = min(self.mdd, ror - 1)
-                        print("{} 패배, 수익률: {}, 누적 수익률: {}".format(self.state["position"], (ror-1) * 100, (self.ror-1) * 100))
+                        # print("{} 패배, 수익률: {}, 누적 수익률: {}".format(self.state["position"], (ror-1) * 100, (self.ror-1) * 100))
 
                     score = int((self.count_result[0] + self.count_result[2]) / sum(self.count_result) * 1000) / 10
                     self.winning_rate_history.append(score)
@@ -89,7 +89,7 @@ class Backtesting:
 
                     if self.state["stop_loss"] < self.data.iloc[i]["high"]:        # 스탑로스
                         ror = 2 - self.state["stop_loss"] / self.state["entry_price"] - self.fee
-                        print("스탑로스맞았다")
+                        # print("스탑로스맞았다")
                     else:    
                         ror = 2 - self.data.iloc[i]["close"] / self.state["entry_price"] - self.fee
 
@@ -98,11 +98,11 @@ class Backtesting:
 
                     if ror > 1:
                         self.count_result[2] += 1
-                        print("{} 승리, 수익률: {}, 누적 수익률: {}".format(self.state["position"], (ror-1) * 100, (self.ror-1) * 100))
+                        # print("{} 승리, 수익률: {}, 누적 수익률: {}".format(self.state["position"], (ror-1) * 100, (self.ror-1) * 100))
                     else:
                         self.count_result[3] += 1
                         self.mdd = min(self.mdd, ror - 1)
-                        print("{} 패배, 수익률: {}, 누적 수익률: {}".format(self.state["position"], (ror-1) * 100, (self.ror-1) * 100))
+                        # print("{} 패배, 수익률: {}, 누적 수익률: {}".format(self.state["position"], (ror-1) * 100, (self.ror-1) * 100))
 
                     score = int((self.count_result[0] + self.count_result[2]) / sum(self.count_result) * 1000) / 10
                     self.winning_rate_history.append(score)
@@ -122,6 +122,10 @@ class Backtesting:
         plt.title(ror + "\n" + count)
         plt.legend(("ror", "winning rate"))
         plt.show()
+        print(ror)
+        print(count)
+        print("-------------------------------------------------------")
+        return int((self.ror - 1) * 1000) / 10, score
             
 # 데이터셋 불러오기
 dataset = pd.read_csv('data/data_1d')
@@ -131,3 +135,17 @@ dataset = pd.read_csv('data/data_1d')
 backtest = Backtesting(dataset)
 backtest.excute()
 backtest.result()
+
+# symbolList = ["BTC/USDT", "ETH/USDT", "XRP/USDT", "BCH/USDT", "EOS/USDT", "LTC/USDT", "ETC/USDT"]
+# rorList = []
+# winningRateList = []
+# for symbol in symbolList:
+#     print(symbol)
+#     dataset = dataloader(symbol=symbol, timeframe="1d", limit=1500)
+#     backtest = Backtesting(dataset)
+#     backtest.excute()
+#     ror, winningRate = backtest.result()
+#     rorList.append(ror)
+#     winningRateList.append(winningRate)
+# print("평균: {:.2f}%".format(sum(rorList) / len(rorList)))
+# print("평균 승률: {:.2f}%".format(sum(winningRateList) / len(winningRateList)))

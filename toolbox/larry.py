@@ -1,15 +1,24 @@
 def larry(data):
-    k = 0.65
-
+    k = 0.3
+    
     last = data.iloc[-2]
     cur = data.iloc[-1]
     
-    range = last['high'] - last['low']
-    if range < last['high'] / 50:
+    volAvg = 0
+    for i in range(-3, -8, -1):
+        vol = data.iloc[i]['volume']
+        volAvg += vol / 5
+    
+    lastVol = last['volume']
+    if lastVol > volAvg:
         return None, None
     
-    long_target = last["close"] + k * range
-    short_target = last["close"] - k * range
+    larryRange = last['high'] - last['low']
+    if larryRange < last['high'] / 50:
+        return None, None
+    
+    long_target = last["close"] + k * larryRange
+    short_target = last["close"] - k * larryRange
     if cur["high"] > long_target:
         return "long", long_target
     elif cur["low"] < short_target:

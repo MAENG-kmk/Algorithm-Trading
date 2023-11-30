@@ -33,8 +33,7 @@ def stop_trade(update, context):
 
 def start_trade():
     global isRunning, balance, bullet, tickers, portfolio
-    balance = binance.fetch_balance()
-    balance = balance['free']['USDT']
+    balance = 1000
     bullet = balance / 5
     tickers = binance.fetch_tickers()
     portfolio = {}
@@ -106,8 +105,7 @@ def sell_order(binance, ticker, amount):
 
 isRunning = False
 
-balance = binance.fetch_balance()
-balance = balance['free']['USDT']
+balance = 1000
 bullet = balance / 5
 tickers = binance.fetch_tickers()
 portfolio = {}
@@ -137,8 +135,7 @@ while True:
                 buy_order(binance, ticker, portfolio[ticker][1])
                 closeMessage += "{} short 포지션 정리 \n수익률: {:.2f}% \n\n".format(ticker, ror)
             portfolio = {}
-            balance = binance.fetch_balance()
-            balance = balance['free']['USDT']
+            balance = balance * (1 + totalRor/100)
             bullet = balance / 5
             closeMessage += "\n잔액: {:.1f}$, 총 수익률: {:.2f}%".format(balance, totalRor)
             send_message(closeMessage)
