@@ -31,7 +31,7 @@ def stop_trade(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="시스템 중지, 재시작 명령어: start")
     isRunning = False
 
-def start_trade():
+def start_trade(update, context):
     global isRunning, balance, bullet, tickers, portfolio
     balance = 1000
     bullet = balance / 5
@@ -127,12 +127,12 @@ while True:
               if portfolio[ticker][0] == "long":
                 ror = (percentage - 1 - 0.0008) * 100
                 totalRor += ror / 5
-                sell_order(binance, ticker, portfolio[ticker][1])
+                # sell_order(binance, ticker, portfolio[ticker][1])
                 closeMessage += "{} long 포지션 정리 \n수익률: {:.2f}% \n\n".format(ticker, ror)
               else:
                 ror = (1 - percentage - 0.0008) * 100
                 totalRor += ror / 5
-                buy_order(binance, ticker, portfolio[ticker][1])
+                # buy_order(binance, ticker, portfolio[ticker][1])
                 closeMessage += "{} short 포지션 정리 \n수익률: {:.2f}% \n\n".format(ticker, ror)
             portfolio = {}
             balance = balance * (1 + totalRor/100)
@@ -155,7 +155,7 @@ while True:
                 'leverage': 1
               })
               amount = cal_amount(bullet, cur_price)
-              buy_order(binance, ticker, amount)
+              # buy_order(binance, ticker, amount)
               portfolio[ticker] = ["long", amount, cur_price]
               send_message("{} long 포지션 진입".format(ticker))
               if len(portfolio) >= 5:
@@ -167,7 +167,7 @@ while True:
                 'leverage': 1
               })
               amount = cal_amount(bullet, cur_price)
-              sell_order(binance, ticker, amount)
+              # sell_order(binance, ticker, amount)
               portfolio[ticker] = ["short", amount, cur_price]
               send_message("{} short 포지션 진입".format(ticker))
               if len(portfolio) >= 5:
